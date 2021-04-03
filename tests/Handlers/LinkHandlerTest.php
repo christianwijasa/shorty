@@ -67,4 +67,37 @@ class LinkHandlerCase extends TestCase
             'message' => 'The shortcode fails to meet the following regexp: ^[0-9a-zA-Z_]{6}$.',
         ])->assertResponseStatus(422);
     }
+
+    public function testGetByShortCodeSuccess()
+    {
+        Link::create([
+            'url' => 'https://google.com',
+            'short_code' => 'abcdef',
+        ]);
+
+        $this->json('GET', '/abcdef')
+            ->seeHeader('Location', 'https://google.com')
+            ->assertResponseStatus(301);
+
+        $link1 = Link::where('short_code', 'abcdef')->first();
+        $this->assertEquals(1, $link1->redirect_count);
+
+        sleep(1);
+
+        $this->json('GET', '/abcdef')
+            ->seeHeader('Location', 'https://google.com')
+            ->assertResponseStatus(301);
+
+        $link2 = Link::where('short_code', 'abcdef')->first();
+        $this->assertEquals(2, $link2->redirect_count);
+        $this->assertTrue(strtotime($link2->last_seen_date) > strtotime($link1->last_seen_date));
+    }
+
+    public function testGetByShortCodeNotFound()
+    {
+        $this->json('GET', '/abcdef')
+            ->seeJsonEquals([
+                'message' => 'The shortcode cannot be found in the system.',
+            ])->assertResponseStatus(404);
+    }
 }

@@ -30,4 +30,18 @@ class LinkController
             return response()->json($err, $e->getCode());
         }
     }
+
+    public function getByShortCode(string $shortCode)
+    {
+        try {
+            $url = $this->linkHandler->getURLByShortCode($shortCode);
+
+            return response()->json([], 301)->header('Location', $url);
+        } catch (\Exception $e) {
+            $err = new \stdClass();
+            $err->message = $e->getMessage();
+
+            return response()->json($err, $e->getCode());
+        }
+    }
 }

@@ -14,3 +14,4 @@
 */
 
 $router->post('shorten', 'LinkController@shorten');
+$router->get('{shortCode}', 'LinkController@getByShortCode');
