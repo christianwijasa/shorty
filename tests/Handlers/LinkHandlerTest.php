@@ -27,44 +27,44 @@ class LinkHandlerCase extends TestCase
         $this->assertEquals(null, $link->last_seen_date);
     }
 
-    // public function testShortenWithoutShortCode()
-    // {
-    //     $this->json('POST', '/shorten', [
-    //         'url' => 'https://google.com',
-    //     ])->assertResponseStatus(201);
-    // }
+    public function testShortenWithoutShortCode()
+    {
+        $this->json('POST', '/shorten', [
+            'url' => 'https://google.com',
+        ])->assertResponseStatus(201);
+    }
 
-    // public function testShortenExisted()
-    // {
-    //     Link::create([
-    //         'url' => 'testURL',
-    //         'short_code' => '_12ABz',
-    //     ]);
+    public function testShortenExisted()
+    {
+        Link::create([
+            'url' => 'testURL',
+            'short_code' => '_12ABz',
+        ]);
 
-    //     $this->json('POST', '/shorten', [
-    //         'url' => 'https://google.com',
-    //         'shortCode' => '_12ABz',
-    //     ])->seeJsonEquals([
-    //         'message' => 'The desired shortcode is already in use. Shortcodes are case-sensitive.',
-    //     ])->assertResponseStatus(409);
-    // }
+        $this->json('POST', '/shorten', [
+            'url' => 'https://google.com',
+            'shortCode' => '_12ABz',
+        ])->seeJsonEquals([
+            'message' => 'The desired shortcode is already in use. Shortcodes are case-sensitive.',
+        ])->assertResponseStatus(409);
+    }
 
-    // public function testShortenWithoutURLParameter()
-    // {
-    //     $this->json('POST', '/shorten', [
-    //         'shortCode' => '_12ABz',
-    //     ])->seeJsonEquals([
-    //         'message' => 'url is not present.',
-    //     ])->assertResponseStatus(400);
-    // }
+    public function testShortenWithoutURLParameter()
+    {
+        $this->json('POST', '/shorten', [
+            'shortCode' => '_12ABz',
+        ])->seeJsonEquals([
+            'message' => 'url is not present.',
+        ])->assertResponseStatus(400);
+    }
 
-    // public function testShortenShortCodeDoesntPassRegex()
-    // {
-    //     $this->json('POST', '/shorten', [
-    //         'url' => 'https://google.com',
-    //         'shortCode' => '!qwert',
-    //     ])->seeJsonEquals([
-    //         'message' => 'The shortcode fails to meet the following regexp: ^[0-9a-zA-Z_]{6}$.',
-    //     ])->assertResponseStatus(422);
-    // }
+    public function testShortenShortCodeDoesntPassRegex()
+    {
+        $this->json('POST', '/shorten', [
+            'url' => 'https://google.com',
+            'shortCode' => '!qwert',
+        ])->seeJsonEquals([
+            'message' => 'The shortcode fails to meet the following regexp: ^[0-9a-zA-Z_]{6}$.',
+        ])->assertResponseStatus(422);
+    }
 }
