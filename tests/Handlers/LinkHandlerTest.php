@@ -100,4 +100,29 @@ class LinkHandlerCase extends TestCase
                 'message' => 'The shortcode cannot be found in the system.',
             ])->assertResponseStatus(404);
     }
+
+    public function testGetStatsByShortCodeSuccess()
+    {
+        Link::create([
+            'url' => 'https://google.com',
+            'short_code' => 'abcdef',
+        ]);
+
+        $link = Link::where('short_code', 'abcdef')->first();
+
+        $this->json('GET', '/abcdef/stats')
+            ->seeJson([
+                "startDate" => $link->start_date,
+                "lastSeenDate" => null,
+                "redirectCount" => 0,
+            ])->assertResponseStatus(200);
+    }
+
+    public function testGetStatsByShortCodeNotFound()
+    {
+        $this->json('GET', '/abcdef/stats')
+            ->seeJsonEquals([
+                'message' => 'The shortcode cannot be found in the system.',
+            ])->assertResponseStatus(404);
+    }
 }
