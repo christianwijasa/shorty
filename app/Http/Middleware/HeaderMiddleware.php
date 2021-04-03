@@ -4,7 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 
-class ExampleMiddleware
+class HeaderMiddleware
 {
     /**
      * Handle an incoming request.
@@ -15,6 +15,10 @@ class ExampleMiddleware
      */
     public function handle($request, Closure $next)
     {
+        if ($request->header('Content-Type') != 'application/json') {
+            return response()->json(['message' => 'Only JSON requests are allowed.'], 400);
+        }
+
         return $next($request);
     }
 }
