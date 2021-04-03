@@ -56,4 +56,19 @@ class LinkHandler
 
         return $link->url;
     }
+
+    public function getStatusByShortCode(string $shortCode): object
+    {
+        $link = Link::where('short_code', $shortCode)->first();
+        if (empty($link)) {
+            throw new \Exception('The shortcode cannot be found in the system.', 404);
+        }
+
+        $status = new \stdClass();
+        $status->startDate = $link->start_date;
+        $status->lastSeenDate = $link->last_seen_date;
+        $status->redirectCount = $link->redirect_count;
+
+        return $status;
+    }
 }

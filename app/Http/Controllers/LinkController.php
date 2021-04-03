@@ -44,4 +44,18 @@ class LinkController
             return response()->json($err, $e->getCode());
         }
     }
+
+    public function getStatsByShortCode(string $shortCode)
+    {
+        try {
+            $status = $this->linkHandler->getStatusByShortCode($shortCode);
+
+            return response()->json($status, 200);
+        } catch (\Exception $e) {
+            $err = new \stdClass();
+            $err->message = $e->getMessage();
+
+            return response()->json($err, $e->getCode());
+        }
+    }
 }
