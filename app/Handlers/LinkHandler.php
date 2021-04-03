@@ -3,6 +3,7 @@
 namespace App\Handlers;
 
 use App\Models\Link;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class LinkHandler
@@ -42,5 +43,17 @@ class LinkHandler
         ]);
 
         return $link->short_code;
+    }
+
+    public function getURLByShortCode(string $shortCode): string
+    {
+        $link = Link::where('short_code', $shortCode)->first();
+        if (empty($link)) {
+            throw new \Exception('The shortcode cannot be found in the system.', 404);
+        }
+
+        $link->increment('redirect_count', 1, ['last_seen_date' => Carbon::now()]);
+
+        return $link->url;
     }
 }
